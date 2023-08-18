@@ -1,0 +1,70 @@
+import pygame
+import sys
+
+# Инициализация Pygame
+pygame.init()
+
+# Размеры экрана
+screen_width = 800
+screen_height = 600
+
+# Цвета
+white = (255, 255, 255)
+black = (0, 0, 0)
+red = (255, 0, 0)
+
+# Создание экрана
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("StarChip Game")
+
+# Загрузка фишек
+black_chip = pygame.image.load("black_chip.png")  # Замените на путь к изображению черной фишки
+red_chip = pygame.image.load("red_chip.png")      # Замените на путь к изображению красной фишки
+white_chip = pygame.image.load("white_chip.png")  # Замените на путь к изображению белой фишки
+
+# Начальные позиции фишек
+black_chip_pos = (100, 100)
+red_chip_pos = (300, 300)
+white_chip_pos = (500, 100)
+
+selected_chip = None  # Выбранная фишка
+dragging = False      # Флаг перетаскивания
+
+clock = pygame.time.Clock()
+
+# Основной игровой цикл
+while True:
+    screen.fill(white)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if black_chip.get_rect(topleft=black_chip_pos).collidepoint(event.pos):
+                selected_chip = black_chip
+                dragging = True
+            elif red_chip.get_rect(topleft=red_chip_pos).collidepoint(event.pos):
+                selected_chip = red_chip
+                dragging = True
+            elif white_chip.get_rect(topleft=white_chip_pos).collidepoint(event.pos):
+                selected_chip = white_chip
+                dragging = True
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            dragging = False
+
+        if dragging and selected_chip:
+            selected_chip_pos = selected_chip.get_rect(center=event.pos)
+            
+    # Отображение фишек
+    screen.blit(black_chip, black_chip_pos)
+    screen.blit(red_chip, red_chip_pos)
+    screen.blit(white_chip, white_chip_pos)
+
+    if selected_chip:
+        screen.blit(selected_chip, selected_chip_pos)
+
+    pygame.display.flip()
+    clock.tick(60)
